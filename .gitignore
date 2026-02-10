@@ -1,0 +1,83 @@
+# ==========================================
+# 1. OS & Editor Specific
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+*.tmp
+.history/
+.project
+.settings/
+.classpath
+
+# ==========================================
+# 2. Java (Spring Boot / Maven)
+# ==========================================
+target/
+build/
+.gradle/
+*.class
+*.jar
+*.war
+*.ear
+.mvn/
+!/src/**/bin
+!/src/**/build
+
+# ==========================================
+# 3. Python (AI / RAG / FastAPI)
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Local Vector DB storage (if using Chroma/FAISS locally)
+/chroma_db/
+/faiss_index/
+*.index
+
+# ==========================================
+# 4. React (Vite / TypeScript)
+# ==========================================
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.tsbuildinfo
+
+# Vite specific
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==========================================
+# 5. Secrets & Environment
+# ==========================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+secrets.yml
+
+# ==========================================
+# 6. Database & Docker
+# ==========================================
+postgres_data/
+pgdata/
+data/
+docker-compose.override.yml
