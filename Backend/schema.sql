@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE book_chunks (
     id SERIAL PRIMARY KEY,
-    book_id VARCHAR(50) NOT NULL,    
+    book_id INTEGER NOT NULL,    
     chapter_number INTEGER NOT NULL, 
     content TEXT NOT NULL,           
     embedding vector(768),           
@@ -10,7 +10,7 @@ CREATE TABLE book_chunks (
 );
 
 CREATE TABLE books (
-    book_id VARCHAR(50) PRIMARY KEY,
+    book_id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     author VARCHAR(100) NOT NULL,
     total_chapters INTEGER NOT NULL,
