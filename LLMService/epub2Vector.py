@@ -12,10 +12,6 @@ import sys
 import os
 import time
 
-
-# ---------------------------
-# Database Functions
-# ---------------------------
 def get_db_connection():
     return psycopg2.connect(
         database=os.getenv("DB_NAME", "true_book_db"),
