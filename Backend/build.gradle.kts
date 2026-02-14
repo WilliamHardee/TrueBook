@@ -24,6 +24,11 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("jakarta.validation:jakarta.validation-api")
+    implementation("org.hibernate.validator:hibernate-validator")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    runtimeOnly("org.postgresql:postgresql")
 }
 
 tasks.withType<Test> {
