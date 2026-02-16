@@ -32,7 +32,7 @@ def delete_existing_book(cur, title: str):
 
 def insert_book_metadata(cur, title: str, author: str, summary: str, total_chapters: int):
     cur.execute(
-        "INSERT INTO books (title, author, total_chapters, summary, visit_count) VALUES (%s, %s, %s, %s, 0)",
+        "INSERT INTO books (title, author, total_chapters, summary) VALUES (%s, %s, %s, %s)",
         (title, author, total_chapters, summary)
     )
     cur.execute("SELECT book_id FROM books WHERE title = %s", (title,))

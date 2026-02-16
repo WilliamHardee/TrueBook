@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE book (
     book_id SERIAL PRIMARY KEY,
-    title TEXT NOT NULL,
+    title TEXT NOT NULL UNIQUE,
     author VARCHAR(100) NOT NULL,
     total_chapters INTEGER NOT NULL,
     summary TEXT,        

@@ -25,6 +25,7 @@ build/
 .mvn/
 !/src/**/bin
 !/src/**/build
+secrets.properties
 
 # ==========================================
 # 3. Python (AI / RAG / FastAPI)
