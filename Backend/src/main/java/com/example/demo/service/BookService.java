@@ -42,7 +42,7 @@ public class BookService {
                 .title(bookDTO.title())
                 .author(bookDTO.author())
                 .totalChapters(bookDTO.totalChapters())
-                .summary(bookJson.path("volumeInfo").path("description").asString())
+                .summary(bookJson.path("volumeInfo").path("description").asString(""))
                 .coverUrl(bookJson.path("volumeInfo").path("imageLinks").path("thumbnail").asString())
                 .build();
 

@@ -6,11 +6,14 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from google import genai
 from google.genai import types
 from psycopg2.extras import execute_values
+from pathlib import Path
 import ebooklib
 import psycopg2
 import sys
 import os
 import time
+import requests
+
 
 def get_db_connection():
     return psycopg2.connect(
@@ -23,20 +26,27 @@ def get_db_connection():
 
 
 def delete_existing_book(cur, title: str):
-    cur.execute("SELECT book_id FROM books WHERE title = %s", (title,))
+    cur.execute("SELECT book_id FROM book WHERE title = %s", (title,))
     book2Delete = cur.fetchone()
     if book2Delete:
-        cur.execute("DELETE FROM books WHERE title = %s", (title,))
-        cur.execute("DELETE FROM book_chunks WHERE book_id = %s", (book2Delete[0],))
+        cur.execute("DELETE FROM book WHERE title = %s", (title,))
+        cur.execute("DELETE FROM book_chunk WHERE book_id = %s", (book2Delete[0],))
 
 
-def insert_book_metadata(cur, title: str, author: str, summary: str, total_chapters: int):
-    cur.execute(
-        "INSERT INTO books (title, author, total_chapters, summary) VALUES (%s, %s, %s, %s)",
-        (title, author, total_chapters, summary)
-    )
-    cur.execute("SELECT book_id FROM books WHERE title = %s", (title,))
-    return cur.fetchone()[0]
+def create_book(title, author, total_chapters):
+    payload = {
+        'title': title, 
+        'author': author, 
+        'totalChapters': total_chapters 
+    }
+    
+    response = requests.post('http://localhost:8080/book/create', json=payload)
+
+    if response.status_code == 201:
+        book_id = int(response.text)
+        return book_id
+    else:
+        return None
 
 
 def insert_chunks(cur, book_id: int, chapter_num: int, chunks: list, embeddings: list):
@@ -45,7 +55,7 @@ def insert_chunks(cur, book_id: int, chapter_num: int, chunks: list, embeddings:
         for chunk, emb in zip(chunks, embeddings)
     ]
     execute_values(cur,
-                   "INSERT INTO book_chunks (book_id, chapter_number, content, embedding) VALUES %s",
+                   "INSERT INTO book_chunk (book_id, chapter_number, content, embedding) VALUES %s",
                    data_to_insert)
 
 
@@ -89,44 +99,46 @@ def embed_chunks(client, chunks: list):
     )
     return embedded.embeddings
 
-def main(epub_path: str):
+def main():
     load_dotenv(find_dotenv())
 
     connection = get_db_connection()
     cur = connection.cursor()
 
-    book = epub.read_epub(epub_path)
-    book_title, book_author, book_desc = extract_book_metadata(book)
+    directory = Path("epubs")
+    for epubFile in directory.iterdir():
 
-    print(f"Ingesting: {book_title} by {book_author}")
+        book = epub.read_epub(str(epubFile))
+        book_title, book_author, book_desc = extract_book_metadata(book)
 
-    delete_existing_book(cur, book_title)
-    connection.commit()
+        print(f"Ingesting: {book_title} by {book_author}")
 
-    chapters = extract_chapters(book)
-    book_id = insert_book_metadata(cur, book_title, book_author, book_desc, len(chapters))
-    connection.commit()
-
-    text_splitter = build_text_splitter()
-    client = build_embedding_client()
-
-    for chapter_num, chapter in enumerate(chapters, start=1):
-        clean_text = clean_html(chapter.get_body_content())
-        split_chunks = text_splitter.split_text(clean_text)
-        embeddings = embed_chunks(client, split_chunks)
-
-        insert_chunks(cur, book_id, chapter_num, split_chunks, embeddings)
+        delete_existing_book(cur, book_title)
         connection.commit()
-        print(f"Chapter {chapter_num}: indexed {len(split_chunks)} chunks")
-        time.sleep(20)  
+
+        chapters = extract_chapters(book)
+        book_id = create_book(book_title, book_author, len(chapters))
+        if(book_id) == None:
+            print("Unable to add book with name: " + book_title)
+            continue
+
+        text_splitter = build_text_splitter()
+        client = build_embedding_client()
+
+        for chapter_num, chapter in enumerate(chapters, start=1):
+            clean_text = clean_html(chapter.get_body_content())
+            split_chunks = text_splitter.split_text(clean_text)
+            embeddings = embed_chunks(client, split_chunks)
+
+            insert_chunks(cur, book_id, chapter_num, split_chunks, embeddings)
+            connection.commit()
+            print(f"Chapter {chapter_num}: indexed {len(split_chunks)} chunks")
+            time.sleep(0.25)  
 
     cur.close()
     connection.close()
     print("Ingestion Complete")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python epub2vector.py <path_to_epub>")
-        sys.exit(1)
 
-    main(sys.argv[1])
+    main()
