@@ -35,6 +35,15 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
+    public List<Book> getPopularBooks(int maxResults) {
+        return bookRepository.findNMostPopularBooks(maxResults);
+    }
+
+    public List<Book> searchBooks(String bookTitle) {
+        return bookRepository.searchBooksByTitle(bookTitle);
+    }
+
+
     public Integer createBook(BookDTO bookDTO) {
         JsonNode bookJson = getBookDetails(bookDTO);
 

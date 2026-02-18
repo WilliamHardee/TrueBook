@@ -63,7 +63,6 @@ def extract_book_metadata(book):
     title = book.get_metadata("DC", "title")[0][0]
     author = book.get_metadata("DC", "creator")[0][0]
     desc = book.get_metadata("DC", "description")[0][0]
-    print(book.get_metadata("DC", "identifier"))
     return title, author, desc
 
 
