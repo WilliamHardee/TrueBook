@@ -37,6 +37,13 @@ public class BookController {
         return ResponseEntity.ok().body(results);
     }
 
+    @GetMapping("/book/{id}")
+    public ResponseEntity<Book> getById(@PathVariable int id) {
+        return bookService.getBookById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 
 
 }

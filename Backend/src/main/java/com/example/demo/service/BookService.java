@@ -4,7 +4,9 @@ package com.example.demo.service;
 import com.example.demo.DTO.BookDTO;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -14,14 +16,16 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.databind.JsonNode;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 @Slf4j
 @Service
 public class BookService {
 
-    RestClient googleBookApiClient;
-    BookRepository bookRepository;
+    private Logger logger = LoggerFactory.getLogger(BookService.class);
+    private RestClient googleBookApiClient;
+    private BookRepository bookRepository;
 
     @Value("${google.books.api.key}")
     private String googleBooksAPIKey;
@@ -35,6 +39,10 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
+    public Optional<Book> getBookById(int bookId) {
+        return bookRepository.findById(bookId);
+    }
+
     public List<Book> getPopularBooks(int maxResults) {
         return bookRepository.findNMostPopularBooks(maxResults);
     }
@@ -46,6 +54,8 @@ public class BookService {
 
     public Integer createBook(BookDTO bookDTO) {
         JsonNode bookJson = getBookDetails(bookDTO);
+
+        logger.info(bookJson.toPrettyString());
 
         Book book = Book.builder()
                 .title(bookDTO.title())
