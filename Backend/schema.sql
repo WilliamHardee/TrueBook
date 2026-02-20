@@ -7,7 +7,8 @@ CREATE TABLE book (
     total_chapters INTEGER NOT NULL,
     summary TEXT,        
     cover_url TEXT,
-    visit_count INTEGER DEFAULT 0, 
+    rating FLOAT,
+    review_count INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -35,7 +36,8 @@ CREATE TABLE review (
     book_id INTEGER NOT NULL REFERENCES book(book_id) ON DELETE CASCADE,
     reviewer_id INTEGER REFERENCES users(user_id),
     reviewer_name VARCHAR(50),
-    score INTEGER NOT NULL CHECK (score >= 1 AND score <= 5), 
+    image_url VARCHAR(255),
+    rating INTEGER NOT NULL CHECK (rating >= 0 AND rating <= 5),
     review TEXT,
     source VARCHAR(10), 
     CONSTRAINT external_internal_review 

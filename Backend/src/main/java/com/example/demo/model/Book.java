@@ -37,8 +37,10 @@ public class Book {
     @Column(name = "cover_url")
     private String coverUrl;
 
-    @Column(name = "visit_count")
-    private int visitCount;
+    @Column(name = "review_count")
+    private int reviewCount;
+
+    private float rating;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

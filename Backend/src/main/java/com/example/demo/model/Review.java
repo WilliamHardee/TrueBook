@@ -29,14 +29,17 @@ public class Review {
     @Column(name = "reviewer_name", length = 50)
     private String reviewerName;
 
-    @Min(1)
+    @Min(0)
     @Max(5)
     @Column(nullable = false)
-    private Integer score;
+    private Integer rating;
 
     @Column(columnDefinition = "TEXT")
     private String review;
 
     @Column(length = 10)
     private String source;
+
+    @Column(name="image_url")
+    private String imageUrl;
 }
