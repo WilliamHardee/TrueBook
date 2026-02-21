@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 
-import com.example.demo.DTO.BookDTO;
+import com.example.demo.DTO.CreateBookDTO;
 import com.example.demo.model.Book;
 import com.example.demo.model.Review;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,8 +29,8 @@ public class HardcoverService {
                 .build();
     }
 
-    public Book createAndMapBook(BookDTO bookDTO, JsonNode hardcoverResponse) {
-        Book book = parseBookDetails(hardcoverResponse, bookDTO);
+    public Book createAndMapBook(CreateBookDTO createBookDTO, JsonNode hardcoverResponse) {
+        Book book = parseBookDetails(hardcoverResponse, createBookDTO);
         List<Review> reviewList = parseBookReviews(hardcoverResponse);
         book.setReviews(reviewList);
         reviewList.forEach((review -> review.setBook(book)));
@@ -39,12 +39,12 @@ public class HardcoverService {
 
     }
 
-    private Book parseBookDetails(JsonNode hardcoverResponse, BookDTO bookDTO) throws JsonNodeException {
+    private Book parseBookDetails(JsonNode hardcoverResponse, CreateBookDTO createBookDTO) throws JsonNodeException {
 
         Book book = Book.builder()
-                .title(bookDTO.title())
-                .author(bookDTO.author())
-                .totalChapters(bookDTO.totalChapters())
+                .title(createBookDTO.title())
+                .author(createBookDTO.author())
+                .totalChapters(createBookDTO.totalChapters())
                 .rating(hardcoverResponse.path("rating").asFloat())
                 .reviewCount(hardcoverResponse.path("ratings_count").asInt())
                 .coverUrl(hardcoverResponse.path("image").path("url").asString())

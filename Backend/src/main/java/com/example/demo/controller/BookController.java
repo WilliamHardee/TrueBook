@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.DTO.BookDTO;
+import com.example.demo.DTO.CreateBookDTO;
+import com.example.demo.DTO.PopularBookDTO;
 import com.example.demo.model.Book;
 import com.example.demo.service.BookService;
 import jakarta.validation.Valid;
@@ -20,15 +21,25 @@ public class BookController {
     }
 
     @PostMapping("/book/create")
-    public ResponseEntity<Integer> createBook(@Valid @RequestBody BookDTO bookDTO) {
-        Integer newBookId = bookService.createBook(bookDTO);
+    public ResponseEntity<Integer> createBook(@Valid @RequestBody CreateBookDTO createBookDTO) {
+        Integer newBookId = bookService.createBook(createBookDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newBookId);
     }
 
     @GetMapping("/book/getPopular")
-    public ResponseEntity<List<Book>> getPopularBooks(@RequestParam(required = false, defaultValue = "10") Integer maxResults) {
+    public ResponseEntity<List<PopularBookDTO>> getPopularBooks(@RequestParam(required = false, defaultValue = "10") Integer maxResults) {
         List<Book> results = bookService.getPopularBooks(maxResults);
-        return ResponseEntity.ok().body(results);
+
+        List<PopularBookDTO> response = results.stream()
+                .map(book -> new PopularBookDTO(
+                        book.getId(),
+                        book.getTitle(),
+                        book.getAuthor(),
+                        book.getCoverUrl()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/book/search")

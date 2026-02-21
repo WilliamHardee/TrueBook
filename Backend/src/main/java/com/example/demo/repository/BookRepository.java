@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Integer> {
 
-    @Query(value = "SELECT * FROM Book ORDER BY visit_count DESC LIMIT :limit", nativeQuery = true)
+    @Query(value = "SELECT * FROM Book ORDER BY review_count DESC LIMIT :limit", nativeQuery = true)
     List<Book> findNMostPopularBooks(@Param("limit") Integer limit);
 
     @Query(value = "SELECT * FROM Book WHERE title LIKE %:bookTitle% LIMIT 50", nativeQuery = true)

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router"
-import type Book from "../../Types/BookType";
+import type { Book } from "../../Types/BookTypes";
+
 
 export default function BookPage() {
 
@@ -12,12 +13,10 @@ export default function BookPage() {
             try {
                 const response = await fetch(`http://localhost:8080/book/${params.bookId}`);
                 if (!response.ok) throw new Error("Failed to fetch books");
-
                 const jsonResults = await response.json();
-
+        
                 const book: Book = jsonResults
-
-
+                console.log(book)
                 setBook(book);
 
             } catch (err: unknown) {
@@ -33,7 +32,7 @@ export default function BookPage() {
     }, []);
 
     return (
-        <>
+        <div className="flex flex-col">
            <div className="flex flex-wrap justify-around gap-16 px-24 py-32 w-full">
                 <div className="flex-1 min-w-[300px]">
                     <div className="mb-10">
@@ -45,7 +44,10 @@ export default function BookPage() {
                 <div className="flex-1 min-w-[300px] flex justify-center items-start">
                     <img className="w-1/2 max-w-xs object-contain" src={book?.coverUrl} alt={book?.title} />
                 </div>
-                </div>
-        </>
+            </div>
+            <div>
+
+            </div>
+        </div>
     )
 }

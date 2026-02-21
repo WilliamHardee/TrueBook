@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 
-import com.example.demo.DTO.BookDTO;
+import com.example.demo.DTO.CreateBookDTO;
 import com.example.demo.model.Book;
 import com.example.demo.model.Genre;
 import com.example.demo.repository.BookRepository;
@@ -44,11 +44,11 @@ public class BookService {
         return bookRepository.searchBooksByTitle(bookTitle);
     }
 
-    public Integer createBook(BookDTO bookDTO) {
+    public Integer createBook(CreateBookDTO createBookDTO) {
         Book book;
         try {
-            JsonNode response = hardcoverService.getApiResponse(bookDTO.title());
-            book = hardcoverService.createAndMapBook(bookDTO, response);
+            JsonNode response = hardcoverService.getApiResponse(createBookDTO.title());
+            book = hardcoverService.createAndMapBook(createBookDTO, response);
             Set<Genre> genres = genreService.resolveGenres(hardcoverService.parseGenreNames(response));
             book.setGenres(genres);
             bookRepository.save(book);

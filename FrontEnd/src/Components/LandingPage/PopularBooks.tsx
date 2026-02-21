@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
-import type Book from "../../Types/BookType";
+import type { BookCardType } from "../../Types/BookTypes";
 import BookCard from "./BookCard";
 
 export default function PopularBooks() {
-    const[popularBooks, setPopularBooks] = useState<Book[]>([])
+    const[popularBooks, setPopularBooks] = useState<BookCardType[]>([])
 
    useEffect(() => {
         const fetchPopularBooks = async () => {
@@ -13,17 +13,7 @@ export default function PopularBooks() {
 
                 const jsonResults = await response.json();
 
-                const books: Book[] = jsonResults.map((raw: any) => ({
-                    id: raw.id,
-                    title: raw.title,
-                    author: raw.author,
-                    totalChapters: raw.totalChapters,
-                    summary: raw.summary,
-                    coverUrl: raw.coverUrl,
-                    visitCount: raw.visitCount
-                }));
-
-                console.log(books)
+                const books: BookCardType[] = jsonResults
 
                 setPopularBooks(books);
 

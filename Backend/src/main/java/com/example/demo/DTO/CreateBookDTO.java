@@ -3,7 +3,7 @@ package com.example.demo.DTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-public record BookDTO(
+public record CreateBookDTO(
         @NotBlank(message="Book must have a title")
         String title,
 
