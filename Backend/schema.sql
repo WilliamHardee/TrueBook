@@ -26,7 +26,7 @@ CREATE TABLE book_chunk (
 CREATE TABLE users ( 
     user_id SERIAL PRIMARY KEY,
     email VARCHAR(50) NOT NULL UNIQUE,
-    username VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255),
     source VARCHAR(10) NOT NULL
 );
